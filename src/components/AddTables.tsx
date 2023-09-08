@@ -1,8 +1,14 @@
 import React, { useState } from 'react';
-import { Button, Container, TextField, Typography } from '@mui/material';
+import { Button, Stack, TextField, Typography } from '@mui/material';
 import { addTables } from '../api/base'; 
 
-const AddTables: React.FC = () => {
+interface Props {
+  handleRefresh: (val: boolean) => void;
+  refreshTable: boolean;
+}
+
+const AddTables: React.FC<Props> = (props) => {
+  const { handleRefresh, refreshTable } = props;
   const [numTables, setNumTables] = useState<number>(0);
   const [numChairsPerTable, setNumChairsPerTable] = useState<number>(0);
   const [message, setMessage] = useState<string>('');
@@ -13,41 +19,46 @@ const AddTables: React.FC = () => {
     try {
       const response = await addTables(numTables, numChairsPerTable);
       setMessage(response.message);
+      handleRefresh(!refreshTable); 
     } catch (error) {
       setMessage('Error adding tables');
     }
   };
 
   return (
-    <Container maxWidth="sm">
+    <Stack spacing={2}>
       <Typography variant="h4" gutterBottom>
         Add Tables
       </Typography>
-      <form onSubmit={handleFormSubmit}>
-        <TextField
-          label="Number of Tables"
-          type="number"
-          fullWidth
-          value={numTables}
-          onChange={(e) => setNumTables(parseInt(e.target.value))}
-        />
-        <TextField
-          label="Chairs per Table"
-          type="number"
-          fullWidth
-          value={numChairsPerTable}
-          onChange={(e) => setNumChairsPerTable(parseInt(e.target.value))}
-        />
-        <Button type="submit" variant="contained" color="primary" fullWidth>
-          Add Tables
-        </Button>
-      </form>
-      {message && (
-        <Typography variant="body1" color="textSecondary" style={{ marginTop: '16px' }}>
-          {message}
-        </Typography>
-      )}
-    </Container>
+      <Stack spacing={2}>
+          {message && (
+            <Typography variant="subtitle1" color="green" style={{ marginTop: '16px' }}>
+              {message}
+            </Typography>
+          )}
+        <form onSubmit={handleFormSubmit}>
+          <Stack direction={'row'} spacing={2}>
+            <TextField
+              label="Number of Tables"
+              type="number"
+              fullWidth
+              value={numTables}
+              onChange={(e) => setNumTables(parseInt(e.target.value))}
+            />
+            <TextField
+              label="Chairs per Table"
+              type="number"
+              fullWidth
+              value={numChairsPerTable}
+              onChange={(e) => setNumChairsPerTable(parseInt(e.target.value))}
+            />
+            <Button type="submit" variant="contained" color="primary" fullWidth>
+              Add Tables
+            </Button>
+          </Stack>
+        </form>
+      </Stack>
+    </Stack>
   );
 };
 

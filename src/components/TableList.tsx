@@ -1,16 +1,26 @@
-// src/components/TableList.tsx
 import React, { useEffect, useState } from 'react';
-import { Container, Typography } from '@mui/material';
+import { Container, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 import { fetchTables } from '../api/base'; // Implement this API function
 
-const TableList: React.FC = () => {
-  const [tables, setTables] = useState<any[]>([]); // Update the type based on your table data structure
+interface ITable {
+  table_name: string;
+  num_chair: number;
+  allocated: number;
+  left: number;
+}
+
+interface Props {
+  refresh: boolean;
+}
+
+const TableList: React.FC<Props> = (props) => {
+  const { refresh  } = props;
+  const [tables, setTables] = useState<ITable[]>([]);
 
   useEffect(() => {
-    // Fetch tables data when the component mounts
     const fetchTablesData = async () => {
       try {
-        const response: any[] = await fetchTables(); // Update the type based on your table data structure
+        const response: ITable[] = await fetchTables();
         setTables(response);
       } catch (error) {
         console.error('Error fetching tables:', error);
@@ -18,18 +28,42 @@ const TableList: React.FC = () => {
     };
 
     fetchTablesData();
-  }, []);
+  }, [refresh]);
 
   return (
     <Container maxWidth="md">
       <Typography variant="h4" gutterBottom>
         Table List
       </Typography>
-      <ul>
-        {tables.map((table, index) => (
-          <li key={index}>{table.table_name}</li>
-        ))}
-      </ul>
+      <TableContainer component={Paper}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Table Name</TableCell>
+              <TableCell>Number of Chairs</TableCell>
+              <TableCell>Allocated</TableCell>
+              <TableCell>Left</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {tables.length === 0 && (
+              <TableRow>
+                <TableCell colSpan={4} align="center">
+                  No record is available
+                </TableCell>
+              </TableRow>
+            )}
+            {tables.length > 0 && tables.map((table, index) => (
+              <TableRow key={index}>
+                <TableCell>{table.table_name}</TableCell>
+                <TableCell>{table.num_chair}</TableCell>
+                <TableCell>{table.allocated}</TableCell>
+                <TableCell>{table.left}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
     </Container>
   );
 };

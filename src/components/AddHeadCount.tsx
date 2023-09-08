@@ -1,9 +1,15 @@
 // src/components/AddHeadcount.tsx
 import React, { useState } from 'react';
-import { Button, Container, Stack, TextField, Typography } from '@mui/material';
+import { Button, Stack, TextField, Typography } from '@mui/material';
 import { addHeadCount } from '../api/base'; // Implement this API function
 
-const AddHeadcount: React.FC = () => {
+interface Props {
+  handleRefresh: (val: boolean) => void;
+  refreshHeadCount: boolean
+}
+
+const AddHeadcount: React.FC<Props> = (props) => {
+  const { handleRefresh, refreshHeadCount } = props;
   const [headCount, setHeadCount] = useState<number>(0);
   const [message, setMessage] = useState<string>('');
 
@@ -13,6 +19,7 @@ const AddHeadcount: React.FC = () => {
     try {
       const response = await addHeadCount(headCount); // Implement this API function
       setMessage(response.message);
+      handleRefresh(!refreshHeadCount);
     } catch (error) {
       setMessage('Error adding headcount');
     }
@@ -23,12 +30,6 @@ const AddHeadcount: React.FC = () => {
       <Typography variant="h4" gutterBottom>
         Add Headcount
       </Typography>
-      <Stack spacing={2}>
-        {message && (
-          <Typography variant="body1" color="textSecondary" style={{ marginTop: '16px' }}>
-            {message}
-          </Typography>
-        )}
       <form onSubmit={handleFormSubmit}>
         <Stack direction={'row'} spacing={2}>
           <TextField
@@ -39,11 +40,15 @@ const AddHeadcount: React.FC = () => {
             onChange={(e) => setHeadCount(parseInt(e.target.value))}
           />
           <Button type="submit" variant="contained" color="primary" fullWidth>
-            Add Headcountsd
+            Add Headcount
           </Button>
         </Stack>
       </form>
-      </Stack>
+      {message && (
+        <Typography variant="subtitle1" color="green" style={{ marginTop: '16px' }}>
+          {message}
+        </Typography>
+      )}
     </Stack>
   );
 };
