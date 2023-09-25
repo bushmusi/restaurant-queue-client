@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         // Define any environment variables needed for the build and deployment
-        DOCKER_IMAGE_NAME = 'my-docker-image' // Change this to your image name
+        DOCKER_IMAGE_NAME = 'retaurant-queue-client' // Change this to your image name
     }
 
     stages {
