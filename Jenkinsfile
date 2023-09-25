@@ -18,7 +18,8 @@ pipeline {
             steps {
                 script {
                     // Build the Docker image using the Dockerfile in your project
-                    docker.build("${env.DOCKER_IMAGE_NAME}:${env.BUILD_NUMBER}")
+                    // docker.build("${env.DOCKER_IMAGE_NAME}:${env.BUILD_NUMBER}")
+                    echo 'building the image'
                 }
             }
         }
@@ -27,8 +28,9 @@ pipeline {
             steps {
                 script {
                     // Push the Docker image to a Docker registry (e.g., Docker Hub)
-                    docker.withRegistry('https://registry.example.com', 'registry-credentials') {
-                        docker.image("${env.DOCKER_IMAGE_NAME}:${env.BUILD_NUMBER}").push()
+                    // docker.withRegistry('https://registry.example.com', 'registry-credentials') {
+                    //     docker.image("${env.DOCKER_IMAGE_NAME}:${env.BUILD_NUMBER}").push()
+                    echo 'pushing image to image registery'
                     }
                 }
             }
@@ -37,7 +39,8 @@ pipeline {
         stage('Deploy') {
             steps {
                 // Deploy the Docker image to your server or orchestration platform (e.g., Kubernetes)
-                sh "docker run -d -p 8080:80 ${env.DOCKER_IMAGE_NAME}:${env.BUILD_NUMBER}"
+                // sh "docker run -d -p 8080:80 ${env.DOCKER_IMAGE_NAME}:${env.BUILD_NUMBER}"
+                echo 'deploying docker container in deploymnet environment'
             }
         }
     }
