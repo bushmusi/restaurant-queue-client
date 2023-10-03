@@ -1,36 +1,26 @@
 pipeline {
-    agent any
-
-    environment {
-        DOCKER_IMAGE_NAME = 'retaurant-queue-client'
+    agent {
+        kubernetes {
+            label 'jenkins-worker-default'
+        }
     }
 
     stages {
-        stage('Checkout') {
+        stage('Stage 1 - Echo Message 1') {
             steps {
-                checkout scm
+                echo 'This is the first test message.'
             }
         }
 
-        stage('Build Docker Image') {
+        stage('Stage 2 - Echo Message 2') {
             steps {
-                script {
-                    echo 'building the image'
-                }
+                echo 'This is the second test message.'
             }
         }
 
-        stage('Push Docker Image to Registry') {
+        stage('Stage 3 - Echo Message 3') {
             steps {
-                script {
-                    echo 'pushing image to image registry'
-                }
-            }
-        }
-
-        stage('Deploy') {
-            steps {
-                echo 'deploying Docker container in deployment environment'
+                echo 'This is the third test message.'
             }
         }
     }
